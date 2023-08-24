@@ -1,5 +1,12 @@
+import { CommentEntity } from 'src/comments/entities/comment.entity';
 import { UserEntity } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 export enum PrivacySettings {
   Public = 'public',
@@ -16,6 +23,9 @@ export class PostEntity {
 
   @ManyToOne(() => UserEntity, (user) => user.posts)
   author: UserEntity;
+
+  @OneToMany(() => CommentEntity, (comment) => comment.post)
+  comments: CommentEntity[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   publicationDate: Date;

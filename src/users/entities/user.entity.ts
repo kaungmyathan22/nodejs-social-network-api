@@ -1,5 +1,6 @@
 import * as bcrypt from 'bcryptjs';
 import { Exclude } from 'class-transformer';
+import { CommentEntity } from 'src/comments/entities/comment.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
 import {
   BeforeInsert,
@@ -20,6 +21,9 @@ export class UserEntity {
 
   @OneToMany(() => PostEntity, (post) => post.author)
   posts: PostEntity[];
+
+  @OneToMany(() => CommentEntity, (comment) => comment.author)
+  comments: CommentEntity[];
 
   @Column({ default: '' })
   bio: string;
