@@ -101,6 +101,9 @@ export class UsersService {
 
   async updateAvatar(file: Express.Multer.File, user: UserEntity) {
     const fileInstance = await this.storageService.create(file);
+    if (user.avatarURL) {
+      await this.storageService.remove(user.avatarURL);
+    }
     user.avatarURL = fileInstance.filename;
     return await this.userRepository.save(user);
   }
