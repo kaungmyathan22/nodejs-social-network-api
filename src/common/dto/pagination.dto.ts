@@ -1,5 +1,6 @@
 // src/common/dto/query-params.dto.ts
 
+import { OmitType } from '@nestjs/mapped-types';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
 import { PrivacySettings } from 'src/post/entities/post.entity';
@@ -35,5 +36,10 @@ export class PaginationQueryParamsDto {
   @IsOptional()
   @IsString()
   @IsEnum(PrivacySettings, { message: 'Invalid privacy setting' })
-  privacy: PrivacySettings = PrivacySettings.Public;
+  privacy: PrivacySettings;
 }
+
+export class MyPaginationQueryParamsDto extends OmitType(
+  PaginationQueryParamsDto,
+  ['author'],
+) {}

@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -12,7 +14,11 @@ import {
 } from '@nestjs/common';
 import JwtAuthenticationGuard from 'src/authentication/guards/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
-import { PaginationQueryParamsDto } from 'src/common/dto/pagination.dto';
+import {
+  MyPaginationQueryParamsDto,
+  PaginationQueryParamsDto,
+} from 'src/common/dto/pagination.dto';
+import { ParseIntPipe } from 'src/common/pipes/parseInt.pipe';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -33,21 +39,37 @@ export class PostController {
     @Query(new ValidationPipe({ transform: true }))
     query: PaginationQueryParamsDto,
   ) {
-    return this.postService.findAll(query);
+    return this.postService.getPublicPosts(query);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('my-posts')
+  myPosts(
+    @Query(new ValidationPipe({ transform: true }))
+    query: MyPaginationQueryParamsDto,
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.postService.getMyPosts(query, user);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.postService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: string) {
+    return this.postService.findPublicPostById(+id);
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updatePostDto: UpdatePostDto) {
+  update(
+    @Param('id', ParseIntPipe) id: string,
+    @Body() updatePostDto: UpdatePostDto,
+  ) {
     return this.postService.update(+id, updatePostDto);
   }
 
+  @UseGuards(JwtAuthenticationGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.postService.remove(+id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(@Param('id') id: string, @CurrentUser() user: UserEntity) {
+    return this.postService.remove(+id, user);
   }
 }
