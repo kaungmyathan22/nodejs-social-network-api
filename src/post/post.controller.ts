@@ -6,10 +6,13 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import JwtAuthenticationGuard from 'src/authentication/guards/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { PaginationQueryParamsDto } from 'src/common/dto/pagination.dto';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
@@ -26,8 +29,11 @@ export class PostController {
   }
 
   @Get()
-  findAll() {
-    return this.postService.findAll();
+  findAll(
+    @Query(new ValidationPipe({ transform: true }))
+    query: PaginationQueryParamsDto,
+  ) {
+    return this.postService.findAll(query);
   }
 
   @Get(':id')
