@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshTokenEntity } from 'src/authentication/entities/token.entity';
+import { PostEntity } from 'src/post/entities/post.entity';
 import { UserEntity } from 'src/users/entities/user.entity';
 
 @Module({
@@ -16,7 +17,7 @@ import { UserEntity } from 'src/users/entities/user.entity';
         host: configService.get('POSTGRES_HOST'),
         port: configService.get('POSTGRES_PORT'),
         database: configService.get('POSTGRES_DB'),
-        entities: [UserEntity, RefreshTokenEntity],
+        entities: [UserEntity, RefreshTokenEntity, PostEntity],
         synchronize: configService.get('SYNCHONRIZE'),
       }),
     }),
