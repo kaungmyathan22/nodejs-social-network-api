@@ -8,7 +8,7 @@ import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CookieMiddleware } from './common/middlewares/cookie.middleware';
 import { DatabaseModule } from './database/database.module';
-import { JobModule } from './job/job.module';
+import { PostModule } from './post/post.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -35,7 +35,6 @@ import { UsersModule } from './users/users.module';
     }),
     UsersModule,
     AuthenticationModule,
-    JobModule,
     DatabaseModule,
     CacheModule.registerAsync({
       isGlobal: true,
@@ -47,6 +46,7 @@ import { UsersModule } from './users/users.module';
         port: configService.get('REDIS_PORT'),
       }),
     }),
+    PostModule,
   ],
   controllers: [AppController],
   providers: [AppService],

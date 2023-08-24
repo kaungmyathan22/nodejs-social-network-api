@@ -1,10 +1,12 @@
 import * as bcrypt from 'bcryptjs';
 import { Exclude } from 'class-transformer';
+import { PostEntity } from 'src/post/entities/post.entity';
 import {
   BeforeInsert,
   BeforeUpdate,
   Column,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
@@ -15,6 +17,9 @@ export class UserEntity {
 
   @Column({ unique: true })
   email: string;
+
+  @OneToMany(() => PostEntity, (post) => post.author) // Establishing the OneToMany relationship
+  posts: PostEntity[];
 
   @Column()
   @Exclude()
