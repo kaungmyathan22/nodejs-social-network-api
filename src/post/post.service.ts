@@ -1,15 +1,29 @@
 import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { UserEntity } from 'src/users/entities/user.entity';
+import { Repository } from 'typeorm';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostEntity, PrivacySettings } from './entities/post.entity';
 
 @Injectable()
 export class PostService {
-  create(createPostDto: CreatePostDto) {
-    return 'This action adds a new post';
+  constructor(
+    @InjectRepository(PostEntity)
+    private postRepository: Repository<PostEntity>,
+  ) {}
+  async create(payload: CreatePostDto, user: UserEntity) {
+    const postInstance = this.postRepository.create({
+      ...payload,
+      author: user,
+    });
+    return this.postRepository.save(postInstance);
   }
 
   findAll() {
-    return `This action returns all post`;
+    return this.postRepository.find({
+      where: { privacySettings: PrivacySettings.Public },
+    });
   }
 
   findOne(id: number) {

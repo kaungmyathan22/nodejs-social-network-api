@@ -1,15 +1,28 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
-import { PostService } from './post.service';
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Patch,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
+import JwtAuthenticationGuard from 'src/authentication/guards/jwt.guard';
+import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { UserEntity } from 'src/users/entities/user.entity';
 import { CreatePostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import { PostService } from './post.service';
 
-@Controller('post')
+@Controller('api/v1/posts')
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
+  @UseGuards(JwtAuthenticationGuard)
   @Post()
-  create(@Body() createPostDto: CreatePostDto) {
-    return this.postService.create(createPostDto);
+  create(@Body() payload: CreatePostDto, @CurrentUser() user: UserEntity) {
+    return this.postService.create(payload, user);
   }
 
   @Get()

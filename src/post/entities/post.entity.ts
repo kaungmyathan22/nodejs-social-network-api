@@ -1,12 +1,12 @@
 import { UserEntity } from 'src/users/entities/user.entity';
-import { Column, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
-enum PrivacySettings {
+export enum PrivacySettings {
   Public = 'public',
   Private = 'private',
 }
 
-// @Entity()
+@Entity()
 export class PostEntity {
   @PrimaryGeneratedColumn()
   id: number;
