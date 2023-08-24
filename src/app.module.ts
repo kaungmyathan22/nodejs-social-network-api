@@ -6,12 +6,12 @@ import * as joi from 'joi';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
+import { CommentsModule } from './comments/comments.module';
 import { CookieMiddleware } from './common/middlewares/cookie.middleware';
 import { DatabaseModule } from './database/database.module';
 import { PostModule } from './post/post.module';
 import { StorageModule } from './storage/storage.module';
 import { UsersModule } from './users/users.module';
-import { CommentsModule } from './comments/comments.module';
 
 @Module({
   imports: [
@@ -54,6 +54,7 @@ import { CommentsModule } from './comments/comments.module';
     CommentsModule,
   ],
   controllers: [AppController],
+
   providers: [AppService],
 })
 export class AppModule {

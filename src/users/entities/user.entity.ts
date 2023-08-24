@@ -6,9 +6,12 @@ import {
   BeforeInsert,
   Column,
   Entity,
+  JoinTable,
+  ManyToMany,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { FriendRequestEntity } from './friend-request.entity';
 
 @Entity()
 export class UserEntity {
@@ -23,6 +26,31 @@ export class UserEntity {
 
   @OneToMany(() => CommentEntity, (comment) => comment.author)
   comments: CommentEntity[];
+
+  @ManyToMany(() => UserEntity, (user) => user.following)
+  @JoinTable({
+    name: 'followers',
+    joinColumn: { name: 'follower_id' },
+    inverseJoinColumn: { name: 'following_id' },
+  })
+  followers: UserEntity[];
+
+  @ManyToMany(() => UserEntity, (user) => user.followers)
+  following: UserEntity[];
+
+  @ManyToMany(() => UserEntity, (user) => user.friends)
+  @JoinTable({
+    name: 'friends',
+    joinColumn: { name: 'userId' },
+    inverseJoinColumn: { name: 'friendId' },
+  })
+  friends: UserEntity[];
+
+  @OneToMany(() => FriendRequestEntity, (request) => request.sender)
+  sentFriendRequests: FriendRequestEntity[];
+
+  @OneToMany(() => FriendRequestEntity, (request) => request.receiver)
+  receivedFriendRequests: FriendRequestEntity[];
 
   @Column({ default: '' })
   bio: string;

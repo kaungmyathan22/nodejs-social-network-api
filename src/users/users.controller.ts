@@ -1,10 +1,7 @@
 import {
   Body,
   Controller,
-  Delete,
   FileTypeValidator,
-  HttpCode,
-  HttpStatus,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
@@ -19,35 +16,19 @@ import { diskStorage } from 'multer';
 import { extname } from 'path';
 import JwtAuthenticationGuard from 'src/authentication/guards/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { ParseIntPipe } from 'src/common/pipes/parseInt.pipe';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
+import { FollowService } from './follow.service';
 import { UsersService } from './users.service';
 
 @Controller('api/v1/users')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
-
-  // @Post()
-  // create(@Body() createUserDto: CreateUserDto) {
-  //   return this.usersService.create(createUserDto);
-  // }
-
-  // @Post('authenticate')
-  // @HttpCode(HttpStatus.OK)
-  // authenticate(@Body() authenticateDTO: AuthenticateDTO) {
-  //   return this.usersService.authenticate(authenticateDTO);
-  // }
-
-  // @Get()
-  // findAll() {
-  //   return this.usersService.findAll();
-  // }
-
-  // @Get(':id')
-  // findOne(@Param('id') id: string) {
-  //   return this.usersService.findOne(+id);
-  // }
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly followService: FollowService,
+  ) {}
 
   @UseGuards(JwtAuthenticationGuard)
   @Patch('my-profile')
@@ -56,12 +37,6 @@ export class UsersController {
     @Body() updateUserDto: UpdateUserDto,
   ) {
     return this.usersService.updateMyProfile(user, updateUserDto);
-  }
-
-  @Delete(':id')
-  @HttpCode(HttpStatus.NO_CONTENT)
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
   }
 
   @UseGuards(JwtAuthenticationGuard)
@@ -89,5 +64,32 @@ export class UsersController {
     @CurrentUser() user: UserEntity,
   ) {
     return this.usersService.updateAvatar(file, user);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('follow/:followedId')
+  followUser(
+    @CurrentUser() user: UserEntity,
+    @Param('followedId') followedId: number,
+  ) {
+    return this.followService.followUser(user, followedId);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('unfollow/:followedId')
+  unfollowUser(
+    @CurrentUser() user: UserEntity,
+    @Param('followedId') followedId: number,
+  ) {
+    return this.followService.unfollowUser(user, followedId);
+  }
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('add-friend/:friendId')
+  addFriend(
+    @CurrentUser() user: UserEntity,
+    @Param('friendId', ParseIntPipe) friendId: number,
+  ) {
+    // return this.followService.addFriend(user, friendId);
+    return {};
   }
 }

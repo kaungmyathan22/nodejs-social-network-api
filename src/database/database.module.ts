@@ -5,6 +5,8 @@ import { RefreshTokenEntity } from 'src/authentication/entities/token.entity';
 import { CommentEntity } from 'src/comments/entities/comment.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
 import { StorageEntity } from 'src/storage/entities/storage.entity';
+import { FollowEntity } from 'src/users/entities/follow.entity';
+import { FriendRequestEntity } from 'src/users/entities/friend-request.entity';
 import { UserEntity } from 'src/users/entities/user.entity';
 
 @Module({
@@ -25,6 +27,8 @@ import { UserEntity } from 'src/users/entities/user.entity';
           PostEntity,
           StorageEntity,
           CommentEntity,
+          FollowEntity,
+          FriendRequestEntity,
         ],
         synchronize: configService.get('SYNCHONRIZE'),
       }),
