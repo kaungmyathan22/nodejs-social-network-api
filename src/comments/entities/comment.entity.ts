@@ -16,6 +16,6 @@ export class CommentEntity {
   @ManyToOne(() => PostEntity, (post) => post.comments)
   post: PostEntity;
 
-  @Column({ type: 'timestamptz' })
+  @Column({ type: 'timestamptz', default: new Date() })
   createdAt: Date;
 }

@@ -119,7 +119,7 @@ export class PostService {
         privacySettings: PrivacySettings.Public,
         id,
       },
-      relations: { author: true },
+      relations: { author: true, comments: true },
     });
     if (!post) {
       throw new HttpException(
