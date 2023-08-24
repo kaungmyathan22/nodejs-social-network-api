@@ -62,8 +62,9 @@ export class PostController {
   update(
     @Param('id', ParseIntPipe) id: string,
     @Body() updatePostDto: UpdatePostDto,
+    @CurrentUser() user: UserEntity,
   ) {
-    return this.postService.update(+id, updatePostDto);
+    return this.postService.update(+id, updatePostDto, user);
   }
 
   @UseGuards(JwtAuthenticationGuard)

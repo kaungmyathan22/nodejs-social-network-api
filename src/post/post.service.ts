@@ -140,8 +140,16 @@ export class PostService {
     return post;
   }
 
-  update(id: number, updatePostDto: UpdatePostDto) {
-    return `This action updates a #${id} post`;
+  async update(id: number, updatePostDto: UpdatePostDto, user: UserEntity) {
+    const post = await this.findOneOrFail({
+      where: {
+        id,
+        author: { id: user.id },
+      },
+    });
+    Object.assign(post, updatePostDto);
+    await this.postRepository.save(post);
+    return post;
   }
 
   async remove(id: number, user: UserEntity) {

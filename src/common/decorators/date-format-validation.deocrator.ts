@@ -11,9 +11,8 @@ export function IsFormattedDate(validationOptions?: ValidationOptions) {
       validator: {
         validate(value: any) {
           if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) {
-            return false; // Return false for invalid formats
+            return false;
           }
-          // You can add additional checks here, e.g., checking if it's a valid date
           return true;
         },
         defaultMessage(args: ValidationArguments) {
