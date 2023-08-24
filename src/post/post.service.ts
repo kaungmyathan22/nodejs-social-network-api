@@ -14,16 +14,6 @@ export class PostService {
     private postRepository: Repository<PostEntity>,
   ) {}
   async create(payload: CreatePostDto, user: UserEntity) {
-    // for (let index = 0; index < 100; index++) {
-    //   const today = new Date();
-    //   today.setDate(today.getDate() + index);
-    // const postInstance = this.postRepository.create({
-    //   ...payload,
-    //   author: user,
-    //   publicationDate: today,
-    // });
-    // await this.postRepository.save(postInstance);
-    // }
     const postInstance = this.postRepository.create({
       ...payload,
       author: user,
