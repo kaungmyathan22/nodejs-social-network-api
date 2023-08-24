@@ -90,4 +90,10 @@ export class UsersService {
   //     return user;
   //   }
   // }
+
+  async updateMyProfile(user: UserEntity, updateUserDto: UpdateUserDto) {
+    Object.assign(user, updateUserDto);
+    const result = await this.userRepository.save(user, { reload: true });
+    return result;
+  }
 }
