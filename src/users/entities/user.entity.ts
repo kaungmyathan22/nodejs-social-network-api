@@ -4,7 +4,6 @@ import { CommentEntity } from 'src/comments/entities/comment.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
 import {
   BeforeInsert,
-  BeforeUpdate,
   Column,
   Entity,
   OneToMany,
@@ -36,9 +35,8 @@ export class UserEntity {
   password: string;
 
   @BeforeInsert()
-  @BeforeUpdate()
   async hashPasswordBeforeInsert() {
-    if (this.password) {
+    if (this.password && !this.id) {
       this.password = await bcrypt.hash(this.password, 10);
     }
   }
