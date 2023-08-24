@@ -21,6 +21,12 @@ export class UserEntity {
   @OneToMany(() => PostEntity, (post) => post.author) // Establishing the OneToMany relationship
   posts: PostEntity[];
 
+  @Column({ default: '' })
+  bio: string;
+
+  @Column({ nullable: true })
+  avatarURL: string;
+
   @Column()
   @Exclude()
   password: string;
