@@ -1,4 +1,5 @@
 import { CommentEntity } from 'src/comments/entities/comment.entity';
+import { ReactionEntity } from 'src/reactions/entities/reaction.entity';
 import { UserEntity } from 'src/users/entities/user.entity';
 import {
   Column,
@@ -26,6 +27,9 @@ export class PostEntity {
 
   @OneToMany(() => CommentEntity, (comment) => comment.post)
   comments: CommentEntity[];
+
+  @OneToMany(() => ReactionEntity, (reaction) => reaction.post)
+  reactions: ReactionEntity[];
 
   @Column({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
   publicationDate: Date;
