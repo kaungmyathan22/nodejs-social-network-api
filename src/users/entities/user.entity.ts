@@ -18,7 +18,7 @@ export class UserEntity {
   @Column({ unique: true })
   email: string;
 
-  @OneToMany(() => PostEntity, (post) => post.author) // Establishing the OneToMany relationship
+  @OneToMany(() => PostEntity, (post) => post.author)
   posts: PostEntity[];
 
   @Column({ default: '' })

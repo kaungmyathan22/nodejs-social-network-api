@@ -2,14 +2,24 @@ import {
   Body,
   Controller,
   Delete,
+  FileTypeValidator,
   HttpCode,
   HttpStatus,
+  MaxFileSizeValidator,
   Param,
+  ParseFilePipe,
   Patch,
+  Post,
+  UploadedFile,
   UseGuards,
+  UseInterceptors,
 } from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { extname } from 'path';
 import JwtAuthenticationGuard from 'src/authentication/guards/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
 import { UsersService } from './users.service';
@@ -52,5 +62,32 @@ export class UsersController {
   @HttpCode(HttpStatus.NO_CONTENT)
   remove(@Param('id') id: string) {
     return this.usersService.remove(+id);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('update-avatar')
+  @UseInterceptors(
+    FileInterceptor('file', {
+      storage: diskStorage({
+        destination: './uploads',
+        filename: (_req, file, cb) => {
+          return cb(null, `${uuidv4()}${extname(file.originalname)}`);
+        },
+      }),
+    }),
+  )
+  updateAvatar(
+    @UploadedFile(
+      new ParseFilePipe({
+        validators: [
+          new FileTypeValidator({ fileType: 'image/*' }),
+          new MaxFileSizeValidator({ maxSize: 20000 }),
+        ],
+      }),
+    )
+    file: Express.Multer.File,
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.usersService.updateAvatar(file, user);
   }
 }

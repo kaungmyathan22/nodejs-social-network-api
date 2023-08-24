@@ -5,6 +5,7 @@
 data/
 scratch/
 seeders/
+uploads/
 # Logs
 logs
 *.log

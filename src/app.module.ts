@@ -9,6 +9,7 @@ import { AuthenticationModule } from './authentication/authentication.module';
 import { CookieMiddleware } from './common/middlewares/cookie.middleware';
 import { DatabaseModule } from './database/database.module';
 import { PostModule } from './post/post.module';
+import { StorageModule } from './storage/storage.module';
 import { UsersModule } from './users/users.module';
 
 @Module({
@@ -31,6 +32,7 @@ import { UsersModule } from './users/users.module';
         COOKIE_JWT_KEY: joi.string().required(),
         COOKIE_REFRESH_JWT_KEY: joi.string().required(),
         REDIS_PORT: joi.number().required(),
+        UPLOAD_PATHS: joi.string().required(),
       }),
     }),
     UsersModule,
@@ -47,6 +49,7 @@ import { UsersModule } from './users/users.module';
       }),
     }),
     PostModule,
+    StorageModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { StorageService } from 'src/storage/storage.service';
 import { Repository } from 'typeorm';
 import { AuthenticateDTO } from './dto/authenticate.dto';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -11,6 +12,7 @@ export class UsersService {
   constructor(
     @InjectRepository(UserEntity)
     private userRepository: Repository<UserEntity>,
+    private readonly storageService: StorageService,
   ) {}
   async create(createUserDto: CreateUserDto) {
     try {
@@ -95,5 +97,11 @@ export class UsersService {
     Object.assign(user, updateUserDto);
     const result = await this.userRepository.save(user, { reload: true });
     return result;
+  }
+
+  async updateAvatar(file: Express.Multer.File, user: UserEntity) {
+    const fileInstance = await this.storageService.create(file);
+    user.avatarURL = fileInstance.filename;
+    return await this.userRepository.save(user);
   }
 }
