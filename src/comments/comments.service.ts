@@ -27,7 +27,6 @@ export class CommentsService {
       take: pageSize,
       skip,
     });
-    console.log({ pageSize });
     const totalPages = Math.ceil(totalItems / pageSize);
     const nextPage = page < totalPages ? page + 1 : null;
     const previousPage = page > 1 ? page - 1 : null;
