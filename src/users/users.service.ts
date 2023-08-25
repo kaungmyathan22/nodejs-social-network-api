@@ -28,7 +28,7 @@ export class UsersService {
     return this.findAll(page, pageSize, {
       where: {
         id: Not(user.id),
-        email: Like(`%${email}%`),
+        ...(email ? { email: Like(`%${email}%`) } : {}),
       },
     });
   }
