@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentsService } from 'src/comments/comments.service';
+import { PaginationQueryParamsDto } from 'src/common/dto/pagination.dto';
+import { PostService } from 'src/post/post.service';
 import { UserEntity } from 'src/users/entities/user.entity';
-import { Repository } from 'typeorm';
+import { FindManyOptions, Repository } from 'typeorm';
 import { ReactCommentDto } from './dto/react-comment.dto';
 import { ReactionEntity } from './entities/reaction.entity';
 
@@ -10,9 +12,42 @@ import { ReactionEntity } from './entities/reaction.entity';
 export class ReactionsService {
   constructor(
     private readonly commentService: CommentsService,
+    private readonly postService: PostService,
     @InjectRepository(ReactionEntity)
     private readonly reactionRespository: Repository<ReactionEntity>,
   ) {}
+
+  async findAll(
+    page: number,
+    pageSize: number,
+    options?: FindManyOptions<ReactionEntity>,
+  ) {
+    const skip = (page - 1) * pageSize;
+
+    const [data, totalItems] = await this.reactionRespository.findAndCount({
+      ...options,
+      take: pageSize,
+      skip,
+    });
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const nextPage = page < totalPages ? page + 1 : null;
+    const previousPage = page > 1 ? page - 1 : null;
+    return {
+      page,
+      pageSize,
+      totalItems,
+      totalPages,
+      nextPage,
+      previousPage,
+      data,
+    };
+  }
+  myReaction(user: UserEntity, { page, pageSize }: PaginationQueryParamsDto) {
+    return this.findAll(page, pageSize, {
+      where: { user: { id: user.id } },
+      relations: { comment: true, post: true },
+    });
+  }
 
   deleteReaction(user: UserEntity, reactionId: number): Promise<void> {
     throw new Error('Method not implemented.');
@@ -24,9 +59,14 @@ export class ReactionsService {
     });
     return reactions;
   }
-  getReactionsForPost(postId: number): Promise<ReactionEntity[]> {
-    throw new Error('Method not implemented.');
+
+  async getReactionsForPost(postId: number): Promise<ReactionEntity[]> {
+    const reactions = await this.reactionRespository.find({
+      where: { post: { id: postId } },
+    });
+    return reactions;
   }
+
   async reactComment(
     user: UserEntity,
     { reactionType }: ReactCommentDto,
@@ -48,6 +88,51 @@ export class ReactionsService {
       });
       const result = await this.reactionRespository.save(createdReactInstance);
       delete result.comment;
+      delete result.user;
+      return {
+        ...result,
+        type: 'created',
+      };
+    }
+    if (reactionInstance.reactionType === reactionType) {
+      // remove reaction
+      const response = {
+        id: reactionInstance.id,
+        reactionType: reactionInstance.reactionType,
+        type: 'removed',
+      };
+      await this.reactionRespository.remove(reactionInstance);
+      return response;
+    }
+    reactionInstance.reactionType = reactionType;
+    const result = await this.reactionRespository.save(reactionInstance);
+    return {
+      ...result,
+      type: 'updated',
+    };
+  }
+
+  async reactPost(
+    user: UserEntity,
+    { reactionType }: ReactCommentDto,
+    postId: number,
+  ) {
+    const post = await this.postService.findOneOrFail(
+      { where: { id: postId } },
+      'Post not found.',
+    );
+    const reactionInstance = await this.reactionRespository.findOne({
+      where: { post: { id: post.id } },
+    });
+    if (!reactionInstance) {
+      // create reaction
+      const createdReactInstance = this.reactionRespository.create({
+        reactionType,
+        user,
+        post: post,
+      });
+      const result = await this.reactionRespository.save(createdReactInstance);
+      delete result.post;
       delete result.user;
       return {
         ...result,

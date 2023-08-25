@@ -5,10 +5,13 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
+  ValidationPipe,
 } from '@nestjs/common';
 import JwtAuthenticationGuard from 'src/authentication/guards/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { PaginationQueryParamsDto } from 'src/common/dto/pagination.dto';
 import { ParseIntPipe } from 'src/common/pipes/parseInt.pipe';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { ReactCommentDto } from './dto/react-comment.dto';
@@ -29,11 +32,31 @@ export class ReactionsController {
     return this.reactionsService.reactComment(user, payload, commentId);
   }
 
+  @UseGuards(JwtAuthenticationGuard)
+  @Post('/post/:postId')
+  reactPost(
+    @Body() payload: ReactCommentDto,
+    @Param('postId', ParseIntPipe) postId: number,
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.reactionsService.reactPost(user, payload, postId);
+  }
+
   @Get('posts/:postId')
   async getReactionsForPost(
     @Param('postId') postId: number,
   ): Promise<ReactionEntity[]> {
     return this.reactionsService.getReactionsForPost(postId);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('my-rections')
+  async my(
+    @Query(new ValidationPipe({ transform: true }))
+    query: PaginationQueryParamsDto,
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.reactionsService.myReaction(user, query);
   }
 
   @Get('comments/:commentId')
