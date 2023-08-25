@@ -5,12 +5,14 @@ import { UserEntity } from 'src/users/entities/user.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { CreateNotificationDto } from './dto/create-notification.dto';
 import { NotificationEntity } from './entities/notification.entity';
+import { NotificationsGateway } from './notifications.gateway';
 
 @Injectable()
 export class NotificationsService {
   constructor(
     @InjectRepository(NotificationEntity)
     private readonly notificationRepository: Repository<NotificationEntity>,
+    private readonly notificationsGateway: NotificationsGateway,
   ) {}
 
   async create({ user, action }: CreateNotificationDto) {
@@ -18,6 +20,7 @@ export class NotificationsService {
       user,
       action,
     });
+    this.notificationsGateway.sendNewNotificationToUser(user, action);
     return this.notificationRepository.save(notification);
   }
 

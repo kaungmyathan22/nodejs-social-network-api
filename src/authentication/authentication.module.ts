@@ -35,5 +35,6 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtRefreshTokenStrategy,
     RefreshTokenService,
   ],
+  exports: [AuthenticationService],
 })
 export class AuthenticationModule {}

@@ -109,4 +109,13 @@ export class AuthenticationService {
     );
     return this.cacheService.del(`${userKey}:${user.id}`);
   }
+
+  verifyToken(token: string): JwtPayload {
+    try {
+      const payload = this.jwtService.verify(token);
+      return payload;
+    } catch (error) {
+      return null;
+    }
+  }
 }

@@ -3,10 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { GlobalExceptionFilter } from './common/global-exception.filter';
+import { SocketAdapter } from './common/adapters/socket.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const conigService = app.get(ConfigService);
+  app.enableCors();
+  app.useWebSocketAdapter(new SocketAdapter(app));
   app.useGlobalPipes(
     new ValidationPipe({
       // transform: true,
@@ -15,7 +18,6 @@ async function bootstrap() {
     }),
   );
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
-
   app.useGlobalFilters(new GlobalExceptionFilter());
   await app.listen(conigService.get('PORT'));
 }
