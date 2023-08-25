@@ -1,10 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginationQueryParamsDto } from 'src/common/dto/pagination.dto';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { FindManyOptions, Repository } from 'typeorm';
 import { CreateNotificationDto } from './dto/create-notification.dto';
-import { UpdateNotificationDto } from './dto/update-notification.dto';
 import { NotificationEntity } from './entities/notification.entity';
 
 @Injectable()
@@ -13,6 +12,7 @@ export class NotificationsService {
     @InjectRepository(NotificationEntity)
     private readonly notificationRepository: Repository<NotificationEntity>,
   ) {}
+
   async create({ user, action }: CreateNotificationDto) {
     const notification = await this.notificationRepository.create({
       user,
@@ -20,6 +20,7 @@ export class NotificationsService {
     });
     return this.notificationRepository.save(notification);
   }
+
   async findAll(
     page: number,
     pageSize: number,
@@ -53,15 +54,15 @@ export class NotificationsService {
     return this.findAll(page, pageSize, { where: { user: { id: user.id } } });
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} notification`;
-  }
-
-  update(id: number, updateNotificationDto: UpdateNotificationDto) {
-    return `This action updates a #${id} notification`;
-  }
-
-  remove(id: number) {
-    return `This action removes a #${id} notification`;
+  async remove(user: UserEntity, id: number) {
+    const notification = await this.notificationRepository.findOne({
+      where: { user: { id: user.id }, id },
+    });
+    if (!notification) {
+      throw new NotFoundException(
+        'The notification you are tryig to delete is not found.',
+      );
+    }
+    return this.notificationRepository.remove(notification);
   }
 }
