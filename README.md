@@ -1,3 +1,5 @@
+### API Documentation
+<a href="https://documenter.getpostman.com/view/7196426/2s9Y5YQhDN#5b0f2bec-d322-4699-baae-0563d3e68909">Link</a>
 ### Tech Stack used in this project
  - Nodejs
  - Typesript
