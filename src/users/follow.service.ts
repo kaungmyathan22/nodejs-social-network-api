@@ -10,6 +10,24 @@ import { UsersService } from './users.service';
 
 @Injectable()
 export class FollowService {
+  async getFollowings(loggedInUser: UserEntity) {
+    const user = await this.userService.findOneOrFail({
+      where: { id: loggedInUser.id },
+      relations: {
+        following: true,
+      },
+    });
+    return user.following;
+  }
+  async getFollowers(loggedInUser: UserEntity) {
+    const user = await this.userService.findOneOrFail({
+      where: { id: loggedInUser.id },
+      relations: {
+        followers: true,
+      },
+    });
+    return user.followers;
+  }
   constructor(private userService: UsersService) {}
 
   async followUser(user: UserEntity, followedId: number) {

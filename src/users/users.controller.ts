@@ -97,4 +97,16 @@ export class UsersController {
   ) {
     return this.followService.unfollowUser(user, followedId);
   }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('my-following')
+  myFollowings(@CurrentUser() user: UserEntity) {
+    return this.followService.getFollowings(user);
+  }
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get('my-followers')
+  myFollowers(@CurrentUser() user: UserEntity) {
+    return this.followService.getFollowers(user);
+  }
 }
