@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentsService } from 'src/comments/comments.service';
 import { PaginationQueryParamsDto } from 'src/common/dto/pagination.dto';
+import { NotificationsService } from 'src/notifications/notifications.service';
 import { PostService } from 'src/post/post.service';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { FindManyOptions, Repository } from 'typeorm';
@@ -11,6 +12,7 @@ import { ReactionEntity } from './entities/reaction.entity';
 @Injectable()
 export class ReactionsService {
   constructor(
+    private readonly notificationsService: NotificationsService,
     private readonly commentService: CommentsService,
     private readonly postService: PostService,
     @InjectRepository(ReactionEntity)
@@ -92,6 +94,10 @@ export class ReactionsService {
         user,
         comment,
       });
+      await this.notificationsService.create({
+        user,
+        action: `${user.email} reacted to your comment`,
+      });
       const result = await this.reactionRespository.save(createdReactInstance);
       delete result.comment;
       delete result.user;
@@ -138,6 +144,11 @@ export class ReactionsService {
         post: post,
       });
       const result = await this.reactionRespository.save(createdReactInstance);
+      await this.notificationsService.create({
+        user,
+        action: `${user.email} reacted to your post`,
+      });
+
       delete result.post;
       delete result.user;
       return {

@@ -1,6 +1,7 @@
 import * as bcrypt from 'bcryptjs';
 import { Exclude } from 'class-transformer';
 import { CommentEntity } from 'src/comments/entities/comment.entity';
+import { NotificationEntity } from 'src/notifications/entities/notification.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
 import { ReactionEntity } from 'src/reactions/entities/reaction.entity';
 import {
@@ -30,6 +31,9 @@ export class UserEntity {
 
   @OneToMany(() => ReactionEntity, (reaction) => reaction.user)
   reactions: ReactionEntity[];
+
+  @OneToMany(() => NotificationEntity, (notification) => notification.user)
+  notifications: NotificationEntity[];
 
   @ManyToMany(() => UserEntity, (user) => user.following)
   @JoinTable({

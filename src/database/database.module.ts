@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { RefreshTokenEntity } from 'src/authentication/entities/token.entity';
 import { CommentEntity } from 'src/comments/entities/comment.entity';
+import { NotificationEntity } from 'src/notifications/entities/notification.entity';
 import { PostEntity } from 'src/post/entities/post.entity';
 import { ReactionEntity } from 'src/reactions/entities/reaction.entity';
 import { StorageEntity } from 'src/storage/entities/storage.entity';
@@ -31,6 +32,7 @@ import { UserEntity } from 'src/users/entities/user.entity';
           FollowEntity,
           FriendRequestEntity,
           ReactionEntity,
+          NotificationEntity,
         ],
         synchronize: configService.get('SYNCHONRIZE'),
       }),
