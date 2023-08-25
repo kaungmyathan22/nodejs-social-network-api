@@ -3,6 +3,8 @@ import {
   Controller,
   Delete,
   Get,
+  HttpCode,
+  HttpStatus,
   Param,
   Post,
   Query,
@@ -66,6 +68,8 @@ export class ReactionsController {
     return this.reactionsService.getReactionsForComment(commentId);
   }
 
+  @HttpCode(HttpStatus.NO_CONTENT)
+  @UseGuards(JwtAuthenticationGuard)
   @Delete(':id')
   async deleteReaction(
     @Param('id') reactionId: number,

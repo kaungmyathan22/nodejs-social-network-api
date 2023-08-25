@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { CommentsService } from 'src/comments/comments.service';
 import { PaginationQueryParamsDto } from 'src/common/dto/pagination.dto';
@@ -49,8 +49,14 @@ export class ReactionsService {
     });
   }
 
-  deleteReaction(user: UserEntity, reactionId: number): Promise<void> {
-    throw new Error('Method not implemented.');
+  async deleteReaction(user: UserEntity, reactionId: number): Promise<void> {
+    const reaction = await this.reactionRespository.findOne({
+      where: { id: reactionId, user: { id: user.id } },
+    });
+    if (!reaction) {
+      throw new NotFoundException('Reaction not found.');
+    }
+    await this.reactionRespository.remove(reaction);
   }
 
   async getReactionsForComment(commentId: number): Promise<ReactionEntity[]> {
