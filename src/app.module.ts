@@ -1,20 +1,22 @@
 import { CacheModule } from '@nestjs/cache-manager';
 import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ServeStaticModule } from '@nestjs/serve-static';
 import * as redisStore from 'cache-manager-redis-store';
 import * as joi from 'joi';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthenticationModule } from './authentication/authentication.module';
 import { CommentsModule } from './comments/comments.module';
 import { CookieMiddleware } from './common/middlewares/cookie.middleware';
 import { DatabaseModule } from './database/database.module';
+import { FriendsModule } from './friends/friends.module';
+import { NotificationsModule } from './notifications/notifications.module';
 import { PostModule } from './post/post.module';
+import { ReactionsModule } from './reactions/reactions.module';
 import { StorageModule } from './storage/storage.module';
 import { UsersModule } from './users/users.module';
-import { ReactionsModule } from './reactions/reactions.module';
-import { NotificationsModule } from './notifications/notifications.module';
-import { FriendsModule } from './friends/friends.module';
 
 @Module({
   imports: [
@@ -38,6 +40,9 @@ import { FriendsModule } from './friends/friends.module';
         REDIS_PORT: joi.number().required(),
         UPLOAD_PATHS: joi.string().required(),
       }),
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
     }),
     UsersModule,
     AuthenticationModule,
