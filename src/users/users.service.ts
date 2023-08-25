@@ -162,4 +162,8 @@ export class UsersService {
     user.avatarURL = fileInstance.filename;
     return await this.userRepository.save(user);
   }
+
+  saveUser(user: UserEntity) {
+    return this.userRepository.save(user);
+  }
 }
