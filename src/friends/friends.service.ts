@@ -181,7 +181,18 @@ export class FriendsService {
       friend,
     };
   }
-  unFriend(user: UserEntity, friendId: number) {
-    throw new Error('Method not implemented.');
+  async unFriend(loggedInUser: UserEntity, friendId: number) {
+    const user = await this.userServices.findOneOrFail({
+      where: { id: loggedInUser.id },
+      relations: { friends: true },
+    });
+    const friends = user.friends;
+    const friendIndex = friends.findIndex((f) => f.id === friendId);
+    if (!(friendIndex > -1)) {
+      throw new NotFoundException('Friend not found.');
+    }
+    friends.splice(friendIndex, 1);
+    user.friends = friends;
+    return this.userServices.saveUser(user);
   }
 }

@@ -167,17 +167,21 @@ export class UsersService {
     return this.userRepository.save(user);
   }
 
-  async getFriends(userId: number, page: number, pageSize: number) {
+  async getFriends(userId: number, page?: number, pageSize?: number) {
     console.log(pageSize);
     const skip = (page - 1) * pageSize;
-    const queryBuilder = this.userRepository
-      .createQueryBuilder('user')
-      .leftJoinAndSelect('user.friends', 'friend')
-      .where('user.id = :userId', { userId })
-      .skip(skip)
-      .take(pageSize);
-    const userWithFriends = await queryBuilder.getOne();
-    const friends = userWithFriends.friends;
-    return friends;
+    // const queryBuilder = this.userRepository
+    //   .createQueryBuilder('user')
+    //   .leftJoinAndSelect('user.friends', 'friend')
+    //   .where('user.id = :userId', { userId })
+    //   .skip(skip)
+    //   .take(pageSize);
+    // const userWithFriends = await queryBuilder.getOne();
+    // const friends = userWithFriends.friends;
+    const user = await this.findOneOrFail({
+      where: { id: userId },
+      relations: { friends: true },
+    });
+    return user.friends;
   }
 }
