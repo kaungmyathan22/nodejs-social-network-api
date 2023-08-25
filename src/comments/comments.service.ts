@@ -1,6 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { MyPaginationQueryParamsDto } from 'src/common/dto/pagination.dto';
+import { NotificationsService } from 'src/notifications/notifications.service';
 import { PostService } from 'src/post/post.service';
 import { UserEntity } from 'src/users/entities/user.entity';
 import { FindManyOptions, FindOneOptions, Repository } from 'typeorm';
@@ -14,6 +15,7 @@ export class CommentsService {
     @InjectRepository(CommentEntity)
     private readonly commentRepository: Repository<CommentEntity>,
     private readonly postService: PostService,
+    private readonly notificationService: NotificationsService,
   ) {}
 
   async findAll(
@@ -44,16 +46,20 @@ export class CommentsService {
   async create(user: UserEntity, { content, postId }: CreateCommentDto) {
     const post = await this.postService.findOneOrFail({
       where: { id: postId },
+      relations: { author: true },
     });
-    for (let index = 0; index < 100; index++) {
-      const commentInstance = this.commentRepository.create({
-        author: user,
-        post,
-        content: `${content} ${index}`,
+    const commentInstance = this.commentRepository.create({
+      author: user,
+      post,
+      content,
+    });
+    if (user.id !== post.author.id) {
+      await this.notificationService.create({
+        user: post.author,
+        action: `${user.email} commented on your post.`,
       });
-      await this.commentRepository.save(commentInstance);
     }
-    return { success: true };
+    return this.commentRepository.save(commentInstance);
   }
 
   async findOneOrFail(

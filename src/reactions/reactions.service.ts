@@ -81,7 +81,7 @@ export class ReactionsService {
     commentId: number,
   ) {
     const comment = await this.commentService.findOneOrFail(
-      { where: { id: commentId } },
+      { where: { id: commentId }, relations: { author: true } },
       'Comment not found.',
     );
     const reactionInstance = await this.reactionRespository.findOne({
@@ -95,7 +95,7 @@ export class ReactionsService {
         comment,
       });
       await this.notificationsService.create({
-        user,
+        user: comment.author,
         action: `${user.email} reacted to your comment`,
       });
       const result = await this.reactionRespository.save(createdReactInstance);
@@ -130,7 +130,7 @@ export class ReactionsService {
     postId: number,
   ) {
     const post = await this.postService.findOneOrFail(
-      { where: { id: postId } },
+      { where: { id: postId }, relations: { author: true } },
       'Post not found.',
     );
     const reactionInstance = await this.reactionRespository.findOne({
@@ -145,7 +145,7 @@ export class ReactionsService {
       });
       const result = await this.reactionRespository.save(createdReactInstance);
       await this.notificationsService.create({
-        user,
+        user: post.author,
         action: `${user.email} reacted to your post`,
       });
 
