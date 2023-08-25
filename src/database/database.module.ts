@@ -8,7 +8,6 @@ import { NotificationEntity } from 'src/notifications/entities/notification.enti
 import { PostEntity } from 'src/post/entities/post.entity';
 import { ReactionEntity } from 'src/reactions/entities/reaction.entity';
 import { StorageEntity } from 'src/storage/entities/storage.entity';
-import { FollowEntity } from 'src/users/entities/follow.entity';
 import { UserEntity } from 'src/users/entities/user.entity';
 
 @Module({
@@ -29,7 +28,6 @@ import { UserEntity } from 'src/users/entities/user.entity';
           PostEntity,
           StorageEntity,
           CommentEntity,
-          FollowEntity,
           FriendRequestEntity,
           ReactionEntity,
           NotificationEntity,
