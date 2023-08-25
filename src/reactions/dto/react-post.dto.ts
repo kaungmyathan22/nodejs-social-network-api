@@ -1,13 +1,9 @@
 import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
-export class CreateReactionDto {
+export class ReactPostDto {
   @IsOptional()
   @IsNumber()
-  postId?: number;
-
-  @IsOptional()
-  @IsNumber()
-  commentId?: number;
+  postId: number;
 
   @IsString()
   @IsNotEmpty()
