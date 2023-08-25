@@ -2,20 +2,24 @@ import {
   Body,
   Controller,
   FileTypeValidator,
+  Get,
   MaxFileSizeValidator,
   Param,
   ParseFilePipe,
   Patch,
   Post,
+  Query,
   UploadedFile,
   UseGuards,
   UseInterceptors,
+  ValidationPipe,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import JwtAuthenticationGuard from 'src/authentication/guards/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
+import { UserFilterPaginationQuery } from 'src/common/dto/pagination.dto';
 import { ParseIntPipe } from 'src/common/pipes/parseInt.pipe';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -29,6 +33,16 @@ export class UsersController {
     private readonly usersService: UsersService,
     private readonly followService: FollowService,
   ) {}
+
+  @UseGuards(JwtAuthenticationGuard)
+  @Get()
+  findUsers(
+    @Query(new ValidationPipe({ transform: true }))
+    query: UserFilterPaginationQuery,
+    @CurrentUser() user: UserEntity,
+  ) {
+    return this.usersService.searchUser(user, query);
+  }
 
   @UseGuards(JwtAuthenticationGuard)
   @Patch('my-profile')

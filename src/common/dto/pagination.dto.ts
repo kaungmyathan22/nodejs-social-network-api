@@ -1,6 +1,6 @@
 // src/common/dto/query-params.dto.ts
 
-import { OmitType } from '@nestjs/mapped-types';
+import { OmitType, PickType } from '@nestjs/mapped-types';
 import { Transform } from 'class-transformer';
 import { IsEnum, IsInt, IsOptional, IsString } from 'class-validator';
 import { PrivacySettings } from 'src/post/entities/post.entity';
@@ -43,3 +43,11 @@ export class MyPaginationQueryParamsDto extends OmitType(
   PaginationQueryParamsDto,
   ['author'],
 ) {}
+
+export class UserFilterPaginationQuery extends PickType(
+  PaginationQueryParamsDto,
+  ['page', 'pageSize'],
+) {
+  @IsOptional()
+  email: string;
+}

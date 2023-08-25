@@ -1,7 +1,14 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { UserFilterPaginationQuery } from 'src/common/dto/pagination.dto';
 import { StorageService } from 'src/storage/storage.service';
-import { FindOneOptions, Repository } from 'typeorm';
+import {
+  FindManyOptions,
+  FindOneOptions,
+  Like,
+  Not,
+  Repository,
+} from 'typeorm';
 import { AuthenticateDTO } from './dto/authenticate.dto';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -14,6 +21,18 @@ export class UsersService {
     private userRepository: Repository<UserEntity>,
     private readonly storageService: StorageService,
   ) {}
+  searchUser(
+    user: UserEntity,
+    { page, pageSize, email }: UserFilterPaginationQuery,
+  ) {
+    return this.findAll(page, pageSize, {
+      where: {
+        id: Not(user.id),
+        email: Like(`%${email}%`),
+      },
+    });
+  }
+
   async create(createUserDto: CreateUserDto) {
     try {
       const user = await this.userRepository.create(createUserDto);
@@ -32,7 +51,32 @@ export class UsersService {
     }
   }
 
-  findAll() {
+  async findAll(
+    page: number,
+    pageSize: number,
+    options?: FindManyOptions<UserEntity>,
+  ) {
+    const skip = (page - 1) * pageSize;
+    const [data, totalItems] = await this.userRepository.findAndCount({
+      ...options,
+      take: pageSize,
+      skip,
+    });
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const nextPage = page < totalPages ? page + 1 : null;
+    const previousPage = page > 1 ? page - 1 : null;
+    return {
+      page,
+      pageSize,
+      totalItems,
+      totalPages,
+      nextPage,
+      previousPage,
+      data,
+    };
+  }
+
+  getAllUsers() {
     return this.userRepository.find();
   }
 
