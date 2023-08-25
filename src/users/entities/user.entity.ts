@@ -13,7 +13,7 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
-import { FriendRequestEntity } from './friend-request.entity';
+import { FriendRequestEntity } from '../../friends/entities/friend-request.entity';
 
 @Entity()
 export class UserEntity {

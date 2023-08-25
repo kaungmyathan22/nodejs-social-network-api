@@ -1,13 +1,18 @@
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
-import { UserEntity } from './user.entity';
+import { UserEntity } from '../../users/entities/user.entity';
+import { FriendRequestStatus } from '../enums/request-status.enum';
 
 @Entity('friend_requests')
 export class FriendRequestEntity {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @Column({ default: 'pending' }) // Status: pending, accepted, rejected, etc.
-  status: string;
+  @Column({
+    default: FriendRequestStatus.Pending,
+    type: 'enum',
+    enum: FriendRequestStatus,
+  })
+  status: FriendRequestStatus;
 
   @ManyToOne(() => UserEntity, (user) => user.sentFriendRequests)
   sender: UserEntity;

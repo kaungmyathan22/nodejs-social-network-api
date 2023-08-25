@@ -166,4 +166,18 @@ export class UsersService {
   saveUser(user: UserEntity) {
     return this.userRepository.save(user);
   }
+
+  async getFriends(userId: number, page: number, pageSize: number) {
+    console.log(pageSize);
+    const skip = (page - 1) * pageSize;
+    const queryBuilder = this.userRepository
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.friends', 'friend')
+      .where('user.id = :userId', { userId })
+      .skip(skip)
+      .take(pageSize);
+    const userWithFriends = await queryBuilder.getOne();
+    const friends = userWithFriends.friends;
+    return friends;
+  }
 }

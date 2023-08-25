@@ -51,3 +51,13 @@ export class UserFilterPaginationQuery extends PickType(
   @IsOptional()
   email: string;
 }
+
+export class PaginationQuery extends PickType(PaginationQueryParamsDto, [
+  'page',
+  'pageSize',
+]) {}
+
+export class SentFriendRequestsPaginationQuery extends PickType(
+  PaginationQueryParamsDto,
+  ['page', 'pageSize'],
+) {}

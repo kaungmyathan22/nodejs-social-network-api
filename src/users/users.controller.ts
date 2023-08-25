@@ -4,7 +4,6 @@ import {
   FileTypeValidator,
   Get,
   MaxFileSizeValidator,
-  Param,
   ParseFilePipe,
   Patch,
   Post,
@@ -20,7 +19,6 @@ import { extname } from 'path';
 import JwtAuthenticationGuard from 'src/authentication/guards/jwt.guard';
 import { CurrentUser } from 'src/common/decorators/current-user.decorator';
 import { UserFilterPaginationQuery } from 'src/common/dto/pagination.dto';
-import { ParseIntPipe } from 'src/common/pipes/parseInt.pipe';
 import { v4 as uuidv4 } from 'uuid';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { UserEntity } from './entities/user.entity';
@@ -80,30 +78,31 @@ export class UsersController {
     return this.usersService.updateAvatar(file, user);
   }
 
-  @UseGuards(JwtAuthenticationGuard)
-  @Post('follow/:followedId')
-  followUser(
-    @CurrentUser() user: UserEntity,
-    @Param('followedId') followedId: number,
-  ) {
-    return this.followService.followUser(user, followedId);
-  }
+  // @UseGuards(JwtAuthenticationGuard)
+  // @Post('follow/:followedId')
+  // followUser(
+  //   @CurrentUser() user: UserEntity,
+  //   @Param('followedId') followedId: number,
+  // ) {
+  //   return this.followService.followUser(user, followedId);
+  // }
 
-  @UseGuards(JwtAuthenticationGuard)
-  @Post('unfollow/:followedId')
-  unfollowUser(
-    @CurrentUser() user: UserEntity,
-    @Param('followedId') followedId: number,
-  ) {
-    return this.followService.unfollowUser(user, followedId);
-  }
-  @UseGuards(JwtAuthenticationGuard)
-  @Post('add-friend/:friendId')
-  addFriend(
-    @CurrentUser() user: UserEntity,
-    @Param('friendId', ParseIntPipe) friendId: number,
-  ) {
-    // return this.followService.addFriend(user, friendId);
-    return {};
-  }
+  // @UseGuards(JwtAuthenticationGuard)
+  // @Post('unfollow/:followedId')
+  // unfollowUser(
+  //   @CurrentUser() user: UserEntity,
+  //   @Param('followedId') followedId: number,
+  // ) {
+  //   return this.followService.unfollowUser(user, followedId);
+  // }
+  // @UseGuards(JwtAuthenticationGuard)
+  // @Post('add-friend/:friendId')
+  // addFriend(
+  //   @CurrentUser() user: UserEntity,
+  //   @Param('friendId', ParseIntPipe) friendId: number,
+  // ) {
+  //   console.log({ user, friendId });
+  //   // return this.followService.addFriend(user, friendId);
+  //   return {};
+  // }
 }
