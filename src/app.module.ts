@@ -17,6 +17,7 @@ import { PostModule } from './post/post.module';
 import { ReactionsModule } from './reactions/reactions.module';
 import { StorageModule } from './storage/storage.module';
 import { UsersModule } from './users/users.module';
+import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [
@@ -63,6 +64,7 @@ import { UsersModule } from './users/users.module';
     ReactionsModule,
     NotificationsModule,
     FriendsModule,
+    MetricsModule,
   ],
   controllers: [AppController],
 

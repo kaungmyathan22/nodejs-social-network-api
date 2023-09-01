@@ -53,6 +53,7 @@ export class NotificationsGateway {
 
   @SubscribeMessage('subscribe-notifications')
   handleMessage(client: Socket) {
+    console.log('Joining');
     const user = client.data.user;
     const roomName = `new_notiications:${user.id}`;
     client.join(roomName);
