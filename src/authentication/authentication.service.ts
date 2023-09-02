@@ -29,8 +29,11 @@ export class AuthenticationService {
     return this.userService.create(payload);
   }
 
-  getAccessToken(user: UserEntity) {
-    const access_token = this.jwtService.sign({ id: user.id });
+  getAccessToken(user: UserEntity, isSecondFactorAuthenticated = false) {
+    const access_token = this.jwtService.sign({
+      id: user.id,
+      isSecondFactorAuthenticated,
+    });
     const jwt_access_expiration_time = this.configService.get<number>(
       EnvironmentConstants.JWT_EXPIRES_IN,
     );
@@ -87,6 +90,22 @@ export class AuthenticationService {
       EnvironmentConstants.JWT_REFRESH_EXPIRES_IN,
     );
     return `${cookieRefreshJwtKey}=${refreshToken}; HttpOnly; Path=/; Max-Age=${cookieRefreshExpiresIn}`;
+  }
+
+  public getCookieWithJwtAccessToken(
+    userId: number,
+    isSecondFactorAuthenticated = false,
+  ) {
+    const payload: JwtPayload = { id: userId, isSecondFactorAuthenticated };
+    const token = this.jwtService.sign(payload, {
+      secret: this.configService.get('JWT_ACCESS_TOKEN_SECRET'),
+      expiresIn: `${this.configService.get(
+        'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+      )}s`,
+    });
+    return `Authentication=${token}; HttpOnly; Path=/; Max-Age=${this.configService.get(
+      'JWT_ACCESS_TOKEN_EXPIRATION_TIME',
+    )}`;
   }
 
   getCookieForLogOut() {

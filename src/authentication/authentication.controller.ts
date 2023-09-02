@@ -10,15 +10,21 @@ import {
 } from '@nestjs/common';
 import { Request } from 'express';
 import { UserEntity } from 'src/users/entities/user.entity';
+import { UsersService } from 'src/users/users.service';
 import { AuthenticationService } from './authentication.service';
 import { RegisterDTO } from './dto/register.dto';
 import JwtRefreshAuthenticationGuard from './guards/jwt-refresh.guard';
 import JwtAuthenticationGuard from './guards/jwt.guard';
 import { LocalAuthGuard } from './guards/local.guard';
+import { TwoFactorAuthenticationService } from './two-factor-authentication.service';
 
 @Controller('api/v1/authentication')
 export class AuthenticationController {
-  constructor(private readonly authenticationService: AuthenticationService) {}
+  constructor(
+    private readonly authenticationService: AuthenticationService,
+    private readonly userService: UsersService,
+    private readonly twoFactorAuthenticationService: TwoFactorAuthenticationService,
+  ) {}
 
   @Post('register')
   @HttpCode(HttpStatus.OK)

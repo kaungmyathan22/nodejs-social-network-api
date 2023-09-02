@@ -2,8 +2,8 @@ import { ClassSerializerInterceptor, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { GlobalExceptionFilter } from './common/global-exception.filter';
 import { SocketAdapter } from './common/adapters/socket.adapter';
+import { GlobalExceptionFilter } from './common/global-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);

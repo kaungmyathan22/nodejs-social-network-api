@@ -70,6 +70,14 @@ export class UserEntity {
   @Exclude()
   password: string;
 
+  @Column({ default: false })
+  @Exclude()
+  isTwoFactorEnabled: boolean;
+
+  @Column({ nullable: true, default: '' })
+  @Exclude()
+  twoFactorAuthenticationSecret: string;
+
   @BeforeInsert()
   async hashPasswordBeforeInsert() {
     if (this.password && !this.id) {

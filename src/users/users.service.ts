@@ -183,4 +183,15 @@ export class UsersService {
     });
     return user.friends;
   }
+
+  async setTwoFactorAuthenticationSecret(secret: string, userId: number) {
+    return this.userRepository.update(userId, {
+      twoFactorAuthenticationSecret: secret,
+    });
+  }
+  async turnOnTwoFactorAuthentication(userId: number) {
+    return this.userRepository.update(userId, {
+      isTwoFactorEnabled: true,
+    });
+  }
 }

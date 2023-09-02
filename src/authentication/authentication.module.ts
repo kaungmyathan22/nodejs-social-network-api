@@ -11,6 +11,9 @@ import { RefreshTokenService } from './refresh-token.service';
 import { JwtRefreshTokenStrategy } from './strategies/jwt-refresh.strategy';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { LocalStrategy } from './strategies/local.strategy';
+import { TwoFactorJwtAuthenticateStrategy } from './strategies/two-factor-authenticate-jwt.strategy';
+import { TwoFactorAuthenticationController } from './two-factor-authentication.controller';
+import { TwoFactorAuthenticationService } from './two-factor-authentication.service';
 
 @Module({
   imports: [
@@ -27,13 +30,15 @@ import { LocalStrategy } from './strategies/local.strategy';
     }),
     TypeOrmModule.forFeature([RefreshTokenEntity]),
   ],
-  controllers: [AuthenticationController],
+  controllers: [AuthenticationController, TwoFactorAuthenticationController],
   providers: [
     AuthenticationService,
     LocalStrategy,
     JwtStrategy,
     JwtRefreshTokenStrategy,
+    TwoFactorJwtAuthenticateStrategy,
     RefreshTokenService,
+    TwoFactorAuthenticationService,
   ],
   exports: [AuthenticationService],
 })

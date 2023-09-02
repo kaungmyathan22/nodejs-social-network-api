@@ -12,12 +12,13 @@ import { CommentsModule } from './comments/comments.module';
 import { CookieMiddleware } from './common/middlewares/cookie.middleware';
 import { DatabaseModule } from './database/database.module';
 import { FriendsModule } from './friends/friends.module';
+import { MetricsModule } from './metrics/metrics.module';
+import { PrometheusMiddleware } from './metrics/middlewares/prometheus.middleware';
 import { NotificationsModule } from './notifications/notifications.module';
 import { PostModule } from './post/post.module';
 import { ReactionsModule } from './reactions/reactions.module';
 import { StorageModule } from './storage/storage.module';
 import { UsersModule } from './users/users.module';
-import { MetricsModule } from './metrics/metrics.module';
 
 @Module({
   imports: [
@@ -73,5 +74,6 @@ import { MetricsModule } from './metrics/metrics.module';
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
     consumer.apply(CookieMiddleware).forRoutes('*');
+    consumer.apply(PrometheusMiddleware).forRoutes('*');
   }
 }

@@ -1,41 +1,41 @@
 version: "3"
 services:
-  app:
-    build: .
-    container_name: my-nestjs-app
-    ports:
-      - "8000:8000"
-    environment:
-      NODE_ENV: production
-      PROMETHEUS_PORT: 9100
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
-      POSTGRES_HOST: postgres
-      POSTGRES_PORT: 5432
-    env_file:
-      - .env
-    depends_on:
-      - prometheus
-      - grafana
-      - postgres
-      - redis
-      - redis-commander
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
-    ports:
-      - "9095:9090"
-    volumes:
-      - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
+  # app:
+  #   build: .
+  #   container_name: my-nestjs-app
+  #   ports:
+  #     - "8000:8000"
+  #   environment:
+  #     NODE_ENV: production
+  #     PROMETHEUS_PORT: 9100
+  #     REDIS_HOST: redis
+  #     REDIS_PORT: 6379
+  #     POSTGRES_HOST: postgres
+  #     POSTGRES_PORT: 5432
+  #   env_file:
+  #     - .env
+  #   depends_on:
+  #     - prometheus
+  #     - grafana
+  #     - postgres
+  #     - redis
+  #     - redis-commander
+  # prometheus:
+  #   image: prom/prometheus
+  #   container_name: prometheus
+  #   ports:
+  #     - "9095:9090"
+  #   volumes:
+  #     - ./prometheus.yaml:/etc/prometheus/prometheus.yaml
 
-  grafana:
-    image: grafana/grafana
-    container_name: grafana
-    ports:
-      - "3001:3000"
-    volumes:
-      - grafana-data:/var/lib/grafana
-      - ./grafana/provisioning:/etc/grafana/provisioning
+  # grafana:
+  #   image: grafana/grafana
+  #   container_name: grafana
+  #   ports:
+  #     - "3001:3000"
+  #   volumes:
+  #     - grafana-data:/var/lib/grafana
+  #     - ./grafana/provisioning:/etc/grafana/provisioning
   postgres:
     container_name: coding-test-postgres
     image: postgres:12-bullseye

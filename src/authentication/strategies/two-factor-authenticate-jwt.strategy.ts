@@ -9,7 +9,10 @@ import { EnvironmentConstants } from 'src/common/constants/environment.constants
 import { UsersService } from 'src/users/users.service';
 
 @Injectable()
-export class JwtStrategy extends PassportStrategy(Strategy) {
+export class TwoFactorJwtAuthenticateStrategy extends PassportStrategy(
+  Strategy,
+  'jwt-two-factor-authenticate',
+) {
   constructor(
     private readonly configService: ConfigService,
     private readonly userService: UsersService,
@@ -41,12 +44,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     );
     if (token_from_cache && token_from_cache === token) {
       const user = await this.userService.findOne(payload.id);
-      if (!user.isTwoFactorEnabled) {
-        return user;
-      } else if (
-        user.isTwoFactorEnabled &&
-        payload.isSecondFactorAuthenticated
-      ) {
+      if (user.isTwoFactorEnabled && !payload.isSecondFactorAuthenticated) {
         return user;
       }
     }
