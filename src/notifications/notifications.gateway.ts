@@ -22,7 +22,7 @@ export class NotificationsGateway {
     private readonly authenticationService: AuthenticationService,
     private readonly userService: UsersService,
     @Inject(CACHE_MANAGER) private cacheService: Cache,
-  ) {} // private readonly userService: UsersService
+  ) {}
   async handleConnection(client: Socket) {
     const { token } = client.handshake.auth;
     if (!token) {
